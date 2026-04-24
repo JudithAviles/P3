@@ -14,6 +14,7 @@ namespace upc {
   /// PitchAnalyzer: class that computes the pitch (in Hz) from a signal frame.
   /// No pre-processing or post-processing has been included
   ///
+  // ^Doxygen comment, appears in doxygen documentation
   class PitchAnalyzer {
   public:
 	/// Wndow type
