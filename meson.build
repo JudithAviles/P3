@@ -16,4 +16,4 @@ subdir('src/get_pitch')
 subdir('scripts')
 
 # Documentación del proyecto
-# subdir('src/doxyfile')
+subdir('src/doxyfile')
