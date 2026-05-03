@@ -62,10 +62,18 @@ namespace upc {
   }
 
   bool PitchAnalyzer::unvoiced(float pot, float r1norm, float rmaxnorm) const {
-    /// \TODO Implement a rule to decide whether the sound is voiced or not.
-    /// * You can use the standard features (pot, r1norm, rmaxnorm),
-    ///   or compute and use other ones.
-    return true;
+    /*
+    \TODO Implement a rule to decide whether the sound is voiced or not.
+    * You can use the standard features (pot, r1norm, rmaxnorm),
+        or compute and use other ones.
+    \DONE More or less arbitrary values have been chosen for the rule
+    More features could be used for the decision
+    Recommended to look over the potency threshold again, maybe compute and use pot_mean?
+    */
+    if(pot > 0.5 || r1norm > 0.5 || rmaxnorm > 0.3)
+      return false;
+    else
+      return true;
   }
 
   float PitchAnalyzer::compute_pitch(vector<float> & x) const {
@@ -81,19 +89,25 @@ namespace upc {
     //Compute correlation
     autocorrelation(x, r);
 
-    vector<float>::const_iterator iR = r.begin(), iRMax = iR;
+    vector<float>::const_iterator iR = r.begin(), iRMax = r.begin() + npitch_min;
 
-    /// \TODO 
-	/// Find the lag of the maximum value of the autocorrelation away from the origin.<br>
-	/// Choices to set the minimum value of the lag are:
-	///    - The first negative value of the autocorrelation.
-	///    - The lag corresponding to the maximum value of the pitch.
-    ///	   .
-	/// In either case, the lag should not exceed that of the minimum value of the pitch.
+  /* 
+  \TODO 
+	Find the lag of the maximum value of the autocorrelation away from the origin.<br>
+	Choices to set the minimum value of the lag are:
+	  - The first negative value of the autocorrelation.
+	  - The lag corresponding to the maximum value of the pitch.
+  .
+	In either case, the lag should not exceed that of the minimum value of the pitch.
+  \DONE A basic search for the maximum value of the autocorrelation away from the origin has been implemented.
+  Nevertheless, the method could be more efficient. --> Maybe use std::max_element()? o iteradores
+  To be done: implementation of a rule for unvoiced segments
+  */
 
-    iRMax = r.begin() + npitch_min;
     for(unsigned int n = iRMax; n < npitch_max; n++){
-      //To fill
+      if((r(n) > r(0)*0.6) && (r(n) > r(iRMax))){
+        iRMax = n; //This is wrong, because r[lag] = rmax instead of r[iRMax]
+      }
     }
 
     unsigned int lag = iRMax - iR;
