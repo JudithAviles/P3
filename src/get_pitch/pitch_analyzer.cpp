@@ -75,19 +75,22 @@ namespace upc {
     // Señales sonoras tienden a tener bajas frecuencias por la resonancia con el tracto vocal --> r[1] >0
     // Las sordas tienden a ser de alta frecuencia  --> r[1] < 0
     // Siempre referido a fm/4 --> Varía con fm
-    if(r1norm > 0.8 || rmaxnorm > 0.6)
+    if(r1norm > 0.8 || rmaxnorm > 0.6){
       return false;
-    else
+    }else{
       return true;
+    }
   }
 
   float PitchAnalyzer::compute_pitch(vector<float> & x) const {
-    if (x.size() != frameLen)
+    if (x.size() != frameLen){
       return -1.0F;
+    }
 
     //Window input frame
-    for (unsigned int i=0; i<x.size(); ++i)
+    for (unsigned int i=0; i<x.size(); ++i){
       x[i] *= window[i];
+    }
 
     vector<float> r(npitch_max);
 
@@ -122,7 +125,7 @@ namespace upc {
     //You can print these (and other) features, look at them using wavesurfer
     //Based on that, implement a rule for unvoiced
     //change to #if 1 and compile
-#if 0
+#if 1
     if (r[0] > 0.0F)
       cout << pot << '\t' << r[1]/r[0] << '\t' << r[lag]/r[0] << endl;
 #endif

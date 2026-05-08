@@ -55,8 +55,17 @@ int main(int argc, const char *argv[]) {
     return -2;
   }
 
+//   std::vector<int>::iterator max;
+  
+//   max = std::max_element(x.begin(), x.end());
+//  //Absolute Max index = std::distance(v.begin(), result)
+//  //Absolute Max value = *max
+//   float abs_max = *max;
+//   for(unsigned int n = 0; n < x.size(); n++){
+//     x[n] = x[n]/abs_max;
+//   }
+
   //Podemos bajar al fm para hacer los experimentos menos caros (~8kHz)
-  //Determinar valor máximo y normalizar la señal para poder usar la potencia universalmente
 
   int n_len = rate * FRAME_LEN;
   int n_shift = rate * FRAME_SHIFT;
