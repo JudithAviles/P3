@@ -75,7 +75,7 @@ namespace upc {
     // Señales sonoras tienden a tener bajas frecuencias por la resonancia con el tracto vocal --> r[1] >0
     // Las sordas tienden a ser de alta frecuencia  --> r[1] < 0
     // Siempre referido a fm/4 --> Varía con fm
-    if(r1norm > 0.8 || rmaxnorm > 0.6){
+    if(r1norm > 0.95 || rmaxnorm > 0.6){
       return false;
     }else{
       return true;
