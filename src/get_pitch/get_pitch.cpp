@@ -55,6 +55,9 @@ int main(int argc, const char *argv[]) {
     return -2;
   }
 
+  //Podemos bajar al fm para hacer los experimentos menos caros (~8kHz)
+  //Determinar valor máximo y normalizar la señal para poder usar la potencia universalmente
+
   int n_len = rate * FRAME_LEN;
   int n_shift = rate * FRAME_SHIFT;
 

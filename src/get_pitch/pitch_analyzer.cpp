@@ -70,7 +70,12 @@ namespace upc {
     More features could be used for the decision
     Recommended to look over the potency threshold again, maybe compute and use pot_mean?
     */
-    if(pot > 0.5 || r1norm > 0.5 || rmaxnorm > 0.3)
+
+    //Normalizar señal en get_pitch!! --> pot > 0.5 || 
+    // Señales sonoras tienden a tener bajas frecuencias por la resonancia con el tracto vocal --> r[1] >0
+    // Las sordas tienden a ser de alta frecuencia  --> r[1] < 0
+    // Siempre referido a fm/4 --> Varía con fm
+    if(r1norm > 0.8 || rmaxnorm > 0.6)
       return false;
     else
       return true;
@@ -104,13 +109,13 @@ namespace upc {
   To be done: implementation of a rule for unvoiced segments
   */
 
-    for(unsigned int n = iRMax; n < npitch_max; n++){
-      if((r(n) > r(0)*0.6) && (r(n) > r(iRMax))){
-        iRMax = n; //This is wrong, because r[lag] = rmax instead of r[iRMax]
+    for(iR = iRMax; (iR < r.begin()+npitch_max-1 && iR < r.end()); iR++){
+      if(*iR > *iRMax){
+        iRMax = iR;
       }
     }
 
-    unsigned int lag = iRMax - iR;
+    unsigned int lag = iRMax - r.begin();
 
     float pot = 10 * log10(r[0]);
 
