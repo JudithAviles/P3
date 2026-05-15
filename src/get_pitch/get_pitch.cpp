@@ -21,20 +21,12 @@ get_pitch - Pitch Estimator
 
 Usage:
     get_pitch [options] <input-wav> <output-txt>
-    get_pitch (-h | --help)
-    get_pitch --version
 
 Options:
     --min-f0=<Hz>              Minimum F0 in Hz [default: 50]
     --max-f0=<Hz>              Maximum F0 in Hz [default: 500]
     --frame-len=<s>            Frame length in seconds [default: 0.030]
     --frame-shift=<s>          Frame shift in seconds [default: 0.015]
-    --window=<type>            Window type: hamming or rect [default: hamming]
-    --pot-threshold=<dB>       Power threshold for unvoiced decision [default: -40.0]
-    --r1norm-threshold=<f>     r1/r0 threshold for unvoiced decision [default: 0.30]
-    --rmaxnorm-threshold=<f>   rmax/r0 threshold for unvoiced decision [default: 0.40]
-    -h, --help                 Show this screen
-    --version                  Show the version of the project
 
 Arguments:
     input-wav   Wave file with the audio signal
@@ -56,14 +48,6 @@ int main(int argc, const char *argv[]) {
     float frame_shift = stof(args["--frame-shift"].asString());
     float min_f0      = stof(args["--min-f0"].asString());
     float max_f0      = stof(args["--max-f0"].asString());
-    float pot_th      = stof(args["--pot-threshold"].asString());
-    float r1n_th      = stof(args["--r1norm-threshold"].asString());
-    float rmaxn_th    = stof(args["--rmaxnorm-threshold"].asString());
-    string win_type   = args["--window"].asString();
-
-    PitchAnalyzer::Window w = (win_type == "rect")
-        ? PitchAnalyzer::RECT : PitchAnalyzer::HAMMING;
-
     // Read input sound file
     unsigned int rate;
     vector<float> x;
@@ -86,8 +70,7 @@ int main(int argc, const char *argv[]) {
     int n_len   = (int)(rate * frame_len   + 0.5F);
     int n_shift = (int)(rate * frame_shift + 0.5F);
 
-    PitchAnalyzer analyzer(n_len, rate, w, min_f0, max_f0,
-                           pot_th, r1n_th, rmaxn_th);
+    PitchAnalyzer analyzer(n_len, rate, PitchAnalyzer::HAMMING, min_f0, max_f0);
 
     vector<float>::iterator iX;
     vector<float> f0;
