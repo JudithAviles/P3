@@ -42,10 +42,15 @@ namespace upc {
     switch (win_type) {
     case HAMMING:
       /// \TODO Implement the Hamming window
+      for (unsigned int n = 0; n < frameLen; ++n){
+        window[n] = 0.54 - 0.46*cos(2*M_PI*n/(frameLen-1));
+      }
       break;
     case RECT:
-    default:
       window.assign(frameLen, 1);
+      break;
+    default:
+      break;
     }
   }
 
@@ -61,25 +66,27 @@ namespace upc {
       npitch_max = frameLen/2;
   }
 
+  void PitchAnalyzer::set_unvoiced_thresholds(float pot, float r1, float rmax) {
+    pot_threshold = pot;
+    r1norm_threshold = r1;
+    rmaxnorm_threshold = rmax;
+  }
+
   bool PitchAnalyzer::unvoiced(float pot, float r1norm, float rmaxnorm) const {
     /*
-    \TODO Implement a rule to decide whether the sound is voiced or not.
-    * You can use the standard features (pot, r1norm, rmaxnorm),
-        or compute and use other ones.
-    \DONE More or less arbitrary values have been chosen for the rule
-    More features could be used for the decision
-    Recommended to look over the potency threshold again, maybe compute and use pot_mean?
+    Decision rule improved:
+    - pot: 10*log10(r[0]), log-power in dB (after normalization to [-1,1])
+    - r1norm: r[1]/r[0], normalized correlation at lag 1
+    - rmaxnorm: r[lag_max]/r[0], normalized correlation at pitch period
     */
 
-    //Normalizar señal en get_pitch!! --> pot > 0.5 || 
-    // Señales sonoras tienden a tener bajas frecuencias por la resonancia con el tracto vocal --> r[1] >0
-    // Las sordas tienden a ser de alta frecuencia  --> r[1] < 0
-    // Siempre referido a fm/4 --> Varía con fm
-    if(r1norm > 0.95 || rmaxnorm > 0.6){
-      return false;
-    }else{
+    if (pot < pot_threshold)
       return true;
-    }
+
+    if (r1norm > r1norm_threshold && rmaxnorm > rmaxnorm_threshold)
+      return false;
+
+    return true;
   }
 
   float PitchAnalyzer::compute_pitch(vector<float> & x) const {
@@ -125,7 +132,7 @@ namespace upc {
     //You can print these (and other) features, look at them using wavesurfer
     //Based on that, implement a rule for unvoiced
     //change to #if 1 and compile
-#if 1
+#if 0
     if (r[0] > 0.0F)
       cout << pot << '\t' << r[1]/r[0] << '\t' << r[lag]/r[0] << endl;
 #endif

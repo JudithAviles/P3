@@ -2,35 +2,31 @@
 
 #include <iostream>
 #include <fstream>
+#include <string>
 #include <string.h>
 #include <errno.h>
+#include <math.h>
+#include <map>
 
 #include "wavfile_mono.h"
 #include "pitch_analyzer.h"
 
 #include "docopt.h"
 
-#define FRAME_LEN   0.030 /* 30 ms. */
-#define FRAME_SHIFT 0.015 /* 15 ms. */
-
 using namespace std;
 using namespace upc;
 
 static const char USAGE[] = R"(
-get_pitch - Pitch Estimator 
+get_pitch - Pitch Estimator
 
 Usage:
     get_pitch [options] <input-wav> <output-txt>
-    get_pitch (-h | --help)
-    get_pitch --version
 
 Options:
-    -p, --potencia FLOAT  Llindar de la potència normalitzada de sonor/sord [Default: 0.5]
-    -1, --r1norm FLOAT    Llindar de correlació a 1 de sonor/sord [Default: 0.95]
-    -M, --rmaxnorm FLOAT  Llindar de correlació al màx fora de l'origen de sonor/sord [Default: 0.75]
-
-    -h, --help      Show this screen
-    --version       Show the version of the project
+    --min-f0=<Hz>              Minimum F0 in Hz [default: 50]
+    --max-f0=<Hz>              Maximum F0 in Hz [default: 500]
+    --frame-len=<s>            Frame length in seconds [default: 0.030]
+    --frame-shift=<s>          Frame shift in seconds [default: 0.015]
 
 Arguments:
     input-wav   Wave file with the audio signal
@@ -40,72 +36,59 @@ Arguments:
 )";
 
 int main(int argc, const char *argv[]) {
-	/// \TODO 
-	///  Modify the program syntax and the call to **docopt()** in order to
-	///  add options and arguments to the program.
     std::map<std::string, docopt::value> args = docopt::docopt(USAGE,
-        {argv + 1, argv + argc},	// array of arguments, without the program name
-        true,    // show help if requested
-        "2.0");  // version string
+        {argv + 1, argv + argc},
+        true,
+        "2.0");
 
-	std::string input_wav = args["<input-wav>"].asString();
-	std::string output_txt = args["<output-txt>"].asString();
-  float llindar_pot = stof(args["--potencia"].asString());
-  float llindar_r1norm = stof(args["--r1norm"].asString());
-  float llindar_rmaxnorm = stof(args["--rmaxnorm"].asString());
+    std::string input_wav = args["<input-wav>"].asString();
+    std::string output_txt = args["<output-txt>"].asString();
 
-  // Read input sound file
-  unsigned int rate;
-  vector<float> x;
-  if (readwav_mono(input_wav, rate, x) != 0) {
-    cerr << "Error reading input file " << input_wav << " (" << strerror(errno) << ")\n";
-    return -2;
-  }
+    float frame_len   = stof(args["--frame-len"].asString());
+    float frame_shift = stof(args["--frame-shift"].asString());
+    float min_f0      = stof(args["--min-f0"].asString());
+    float max_f0      = stof(args["--max-f0"].asString());
+    // Read input sound file
+    unsigned int rate;
+    vector<float> x;
+    if (readwav_mono(input_wav, rate, x) != 0) {
+        cerr << "Error reading input file " << input_wav << " (" << strerror(errno) << ")\n";
+        return -2;
+    }
 
-  //Podemos bajar al fm para hacer los experimentos menos caros (~8kHz)
+    float max_abs = 0.0F;
+    for (size_t n = 0; n < x.size(); ++n) {
+        float abs_val = fabs(x[n]);
+        if (abs_val > max_abs)
+            max_abs = abs_val;
+    }
+    if (max_abs > 0.0F) {
+        for (size_t n = 0; n < x.size(); ++n)
+            x[n] /= max_abs;
+    }
 
-  int n_len = rate * FRAME_LEN;
-  int n_shift = rate * FRAME_SHIFT;
+    int n_len   = (int)(rate * frame_len   + 0.5F);
+    int n_shift = (int)(rate * frame_shift + 0.5F);
 
-  // Define analyzer
-  PitchAnalyzer analyzer(n_len, rate, PitchAnalyzer::RECT, 50, 500, llindar_pot, llindar_r1norm, llindar_rmaxnorm);
+    PitchAnalyzer analyzer(n_len, rate, PitchAnalyzer::HAMMING, min_f0, max_f0);
 
-  /// \TODO
-  /// Preprocess the input signal in order to ease pitch estimation. For instance,
-  /// central-clipping or low pass filtering may be used.
-  
-  // std::vector<float>::iterator max;
-  //   max = std::max_element(x.begin(), x.end());
-  //  //Absolute Max index = std::distance(v.begin(), result)
-  //  //Absolute Max value = *max
-  //   float abs_max = *max;
-  //   for(unsigned int n = 0; n < x.size(); n++){
-  //     x[n] = x[n]/abs_max;
-  //   }
-  
-  // Iterate for each frame and save values in f0 vector
-  vector<float>::iterator iX;
-  vector<float> f0;
-  for (iX = x.begin(); iX + n_len < x.end(); iX = iX + n_shift) {
-    float f = analyzer(iX, iX + n_len);
-    f0.push_back(f);
-  }
+    vector<float>::iterator iX;
+    vector<float> f0;
+    for (iX = x.begin(); iX + n_len < x.end(); iX = iX + n_shift) {
+        float f = analyzer(iX, iX + n_len);
+        f0.push_back(f);
+    }
 
-  /// \TODO
-  /// Postprocess the estimation in order to supress errors. For instance, a median filter
-  /// or time-warping may be used.
+    ofstream os(output_txt);
+    if (!os.good()) {
+        cerr << "Error opening output file " << output_txt << " (" << strerror(errno) << ")\n";
+        return -3;
+    }
 
-  // Write f0 contour into the output file
-  ofstream os(output_txt);
-  if (!os.good()) {
-    cerr << "Error reading output file " << output_txt << " (" << strerror(errno) << ")\n";
-    return -3;
-  }
+    os << 0 << '\n';
+    for (iX = f0.begin(); iX != f0.end(); ++iX)
+        os << *iX << '\n';
+    os << 0 << '\n';
 
-  os << 0 << '\n'; //pitch at t=0
-  for (iX = f0.begin(); iX != f0.end(); ++iX) 
-    os << *iX << '\n';
-  os << 0 << '\n';//pitch at t=Dur
-
-  return 0;
+    return 0;
 }

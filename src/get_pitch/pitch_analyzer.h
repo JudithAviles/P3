@@ -31,9 +31,9 @@ namespace upc {
       samplingFreq, ///< sampling rate (in samples per second). Has to be set in the constructor call
       npitch_min, ///< minimum value of pitch period, in samples
       npitch_max; ///< maximum value of pitch period, in samples
-    float llindar_pot, ///< llindar de potència normalitzada
-      llindar_r1norm, ///< llindar de correlació a 1
-      llindar_rmaxnorm; ///< llindar de correlació  al màx fora de l'origen
+    float pot_threshold;
+    float r1norm_threshold;
+    float rmaxnorm_threshold;
  
 	///
 	/// Computes correlation from lag=0 to r.size()
@@ -54,21 +54,21 @@ namespace upc {
   public:
     PitchAnalyzer(	unsigned int fLen,			///< Frame length in samples
 					unsigned int sFreq,			///< Sampling rate in Hertzs
-					Window w=PitchAnalyzer::HAMMING,	///< Window type
+					Window w = PitchAnalyzer::HAMMING,	///< Window type
 					float min_F0 = MIN_F0,		///< Pitch range should be restricted to be above this value
-					float max_F0 = MAX_F0,	///< Pitch range should be restricted to be below this value
-          float llindar_pot = 0,  ///< Llindar de potència normalitzada
-          float llindar_r1norm = 0,   ///< Llindar de correlació a 1
-          float llindar_rmaxnorm = 0   ///< Llindar de correlació  al màx fora de l'origen
+					float max_F0 = MAX_F0,		///< Pitch range should be restricted to be below this value
+					float potTh = -40.0F,
+					float r1nTh = 0.30F,
+					float rmaxnTh = 0.40F
 				 )
 	{
       frameLen = fLen;
       samplingFreq = sFreq;
+      pot_threshold = potTh;
+      r1norm_threshold = r1nTh;
+      rmaxnorm_threshold = rmaxnTh;
       set_f0_range(min_F0, max_F0);
       set_window(w);
-      this->llindar_pot = llindar_pot;
-      this->llindar_r1norm = llindar_r1norm;
-      this->llindar_rmaxnorm = llindar_rmaxnorm;
     }
 
 	///
@@ -112,6 +112,8 @@ namespace upc {
     /// Sets pitch range: takes min_F0 and max_F0 in Hz, sets npitch_min and npitch_max in samples
 	///
     void set_f0_range(float min_F0, float max_F0);
+
+    void set_unvoiced_thresholds(float pot, float r1, float rmax);
   };
 }
 #endif
