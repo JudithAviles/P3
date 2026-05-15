@@ -66,6 +66,12 @@ namespace upc {
       npitch_max = frameLen/2;
   }
 
+  void PitchAnalyzer::set_unvoiced_thresholds(float pot, float r1, float rmax) {
+    pot_threshold = pot;
+    r1norm_threshold = r1;
+    rmaxnorm_threshold = rmax;
+  }
+
   bool PitchAnalyzer::unvoiced(float pot, float r1norm, float rmaxnorm) const {
     /*
     Decision rule improved:
@@ -74,17 +80,11 @@ namespace upc {
     - rmaxnorm: r[lag_max]/r[0], normalized correlation at pitch period
     */
 
-    const float POT_THRESHOLD = -40.0F;
-    const float R1NORM_THRESHOLD = 0.30F;
-    const float RMAXNORM_THRESHOLD = 0.40F;
-
-    if (pot < POT_THRESHOLD) {
+    if (pot < pot_threshold)
       return true;
-    }
 
-    if (r1norm > R1NORM_THRESHOLD && rmaxnorm > RMAXNORM_THRESHOLD) {
+    if (r1norm > r1norm_threshold && rmaxnorm > rmaxnorm_threshold)
       return false;
-    }
 
     return true;
   }
