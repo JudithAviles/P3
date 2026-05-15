@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string.h>
 #include <errno.h>
+#include <math.h>
 
 #include "wavfile_mono.h"
 #include "pitch_analyzer.h"
@@ -55,15 +56,18 @@ int main(int argc, const char *argv[]) {
     return -2;
   }
 
-//   std::vector<int>::iterator max;
-  
-//   max = std::max_element(x.begin(), x.end());
-//  //Absolute Max index = std::distance(v.begin(), result)
-//  //Absolute Max value = *max
-//   float abs_max = *max;
-//   for(unsigned int n = 0; n < x.size(); n++){
-//     x[n] = x[n]/abs_max;
-//   }
+  float max_abs = 0.0F;
+  for (size_t n = 0; n < x.size(); n++) {
+    float abs_val = fabs(x[n]);
+    if (abs_val > max_abs) {
+      max_abs = abs_val;
+    }
+  }
+  if (max_abs > 0.0F) {
+    for (size_t n = 0; n < x.size(); n++) {
+      x[n] = x[n] / max_abs;
+    }
+  }
 
   //Podemos bajar al fm para hacer los experimentos menos caros (~8kHz)
 
@@ -71,7 +75,7 @@ int main(int argc, const char *argv[]) {
   int n_shift = rate * FRAME_SHIFT;
 
   // Define analyzer
-  PitchAnalyzer analyzer(n_len, rate, PitchAnalyzer::RECT, 50, 500);
+  PitchAnalyzer analyzer(n_len, rate, PitchAnalyzer::HAMMING, 50, 500);
 
   /// \TODO
   /// Preprocess the input signal in order to ease pitch estimation. For instance,
