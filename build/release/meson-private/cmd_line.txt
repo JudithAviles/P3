@@ -1,0 +1,7 @@
+[options]
+prefix = /home/judith/PAV
+libdir = lib
+buildtype = release
+
+[properties]
+
