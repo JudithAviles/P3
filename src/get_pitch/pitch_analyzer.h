@@ -17,13 +17,16 @@ namespace upc {
   // ^Doxygen comment, appears in doxygen documentation
   class PitchAnalyzer {
   public:
-	/// Wndow type
-    enum Window {
-		RECT, 						///< Rectangular window
-		HAMMING						///< Hamming window
-	};
+	/// Wndow type + Unvoiced choice type
+    enum Params {
+		RECT, 						          ///< Rectangular window
+		HAMMING,						        ///< Hamming window
+    CORRELACIO = 1, 				    ///< Autocorrelation
+    AMDF = 2, 						      ///< AMDF
+    CEPSTRUM = 3 						    ///< Cepstrum
+  };
 
-    void set_window(Window type); ///< pre-compute window
+    void set_window(Params type); ///< pre-compute window
 
   private:
     std::vector<float> window; ///< precomputed window
@@ -31,6 +34,7 @@ namespace upc {
       samplingFreq, ///< sampling rate (in samples per second). Has to be set in the constructor call
       npitch_min, ///< minimum value of pitch period, in samples
       npitch_max; ///< maximum value of pitch period, in samples
+    int unvoiced_choice;
     float pot_threshold;
     float r1norm_threshold;
     float rmaxnorm_threshold;
@@ -40,6 +44,21 @@ namespace upc {
 	///
     void autocorrelation(const std::vector<float> &x, std::vector<float> &r) const;
 
+  ///
+	/// Computes AMDF from lag=0 to d.size()
+	///
+    void compute_AMDF(const std::vector<float> &x, std::vector<float> &d) const;
+
+  ///
+	/// Computes cepstrum from lag=0 to r.size()
+	///
+    void cepstrum(const std::vector<float> &x, std::vector<float> &c) const;
+
+  ///
+	/// Computes zero crossings of input frame x
+	///
+    float compute_zcr(const std::vector<float> &x, size_t N, float fm) const;
+
 	///
 	/// Returns the pitch (in Hz) of input frame x
 	///
@@ -48,18 +67,19 @@ namespace upc {
 	///
 	/// Returns true is the frame is unvoiced
 	///
-    bool unvoiced(float pot, float r1norm, float rmaxnorm) const;
+    bool unvoiced(float pot, float r1norm, float rmaxnorm, float zcr) const;
 
 
   public:
     PitchAnalyzer(	unsigned int fLen,			///< Frame length in samples
 					unsigned int sFreq,			///< Sampling rate in Hertzs
-					Window w = PitchAnalyzer::HAMMING,	///< Window type
+					Params w = PitchAnalyzer::HAMMING,	///< Window type
+          Params method_choice = PitchAnalyzer::CORRELACIO,	  ///< Method used for the unvoiced choice
 					float min_F0 = 20,		///< Pitch range should be restricted to be above this value
 					float max_F0 = 500,		///< Pitch range should be restricted to be below this value
-					float potTh = -40.0F,    ///< Llindar de potència per unvoiced decision
-					float r1nTh = 0.50F,    ///< Llindar de r[1]/r[0] per unvoiced decision
-					float rmaxnTh = 0.35F   ///< Llindar de r[P]/r[0] per unvoiced decision
+					float potTh = -42.0F,    ///< Llindar de potència per unvoiced decision
+					float r1nTh = 0.47F,    ///< Llindar de r[1]/r[0] per unvoiced decision
+					float rmaxnTh = 0.33F   ///< Llindar de r[P]/r[0] per unvoiced decision
 				 )
 	  {
       frameLen = fLen;
@@ -67,6 +87,7 @@ namespace upc {
       pot_threshold = potTh;
       r1norm_threshold = r1nTh;
       rmaxnorm_threshold = rmaxnTh;
+      unvoiced_choice = method_choice;
       set_f0_range(min_F0, max_F0);
       //set_unvoiced_thresholds(potTh, r1nTh, rmaxnTh);
       set_window(w);

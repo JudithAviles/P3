@@ -40,9 +40,9 @@ Options:
     --max-f0=<Hz>              Maximum F0 in Hz [default: 500]
     --frame-len=<s>            Frame length in seconds [default: 0.030]
     --frame-shift=<s>          Frame shift in seconds [default: 0.015]
-    --alpha0=<dB>              Power threshold for unvoiced decision [default: -40]
-    --alpha1=<f>               r1/r0 threshold for unvoiced decision [default: 0.50]
-    --alpha2=<f>               rmax/r0 threshold for unvoiced decision [default: 0.35]
+    --alpha0=<dB>              Power threshold for unvoiced decision [default: -42]
+    --alpha1=<f>               r1/r0 threshold for unvoiced decision [default: 0.47]
+    --alpha2=<f>               rmax/r0 threshold for unvoiced decision [default: 0.33]
 
 Arguments:
     input-wav   Wave file with the audio signal
@@ -50,6 +50,12 @@ Arguments:
                     - One line per frame with the estimated f0
                     - If considered unvoiced, f0 must be set to f0 = 0
 )";
+
+
+// A añadir al docopt --> Threshold zcr, unvoiced analysis choice (string)?
+
+
+
 
 int main(int argc, const char *argv[]) {
 	/**
@@ -91,7 +97,7 @@ int main(int argc, const char *argv[]) {
     int n_shift = (int)(rate * frame_shift);
 
     // Define analyzer
-    PitchAnalyzer analyzer(n_len, rate, PitchAnalyzer::HAMMING, min_f0, max_f0, alpha0, alpha1, alpha2);
+    PitchAnalyzer analyzer(n_len, rate, PitchAnalyzer::HAMMING, PitchAnalyzer::CORRELACIO, min_f0, max_f0, alpha0, alpha1, alpha2);
 
     /// \TODO
     /// Preprocess the input signal in order to ease pitch estimation. For instance,
