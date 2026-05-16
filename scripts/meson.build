@@ -2,6 +2,8 @@
 
 scripts = [
     'run_get_pitch.sh',
+    'grid_search.sh',
+    'plot_analysis.py',
 ]
 
 foreach script: scripts
