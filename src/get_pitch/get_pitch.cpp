@@ -34,9 +34,15 @@ Usage:
     get_pitch --version
 
 Options:
+    -h, --help  Show this screen
+    --version   Show the version of the project
+    --min-f0=<Hz>              Minimum F0 in Hz [default: 20]
+    --max-f0=<Hz>              Maximum F0 in Hz [default: 500]
+    --frame-len=<s>            Frame length in seconds [default: 0.030]
+    --frame-shift=<s>          Frame shift in seconds [default: 0.015]
     --alpha0=<dB>              Power threshold for unvoiced decision [default: -40]
-    --alpha1=<f>               r1/r0 threshold for unvoiced decision [default: 0.30]
-    --alpha2=<f>               rmax/r0 threshold for unvoiced decision [default: 0.40]
+    --alpha1=<f>               r1/r0 threshold for unvoiced decision [default: 0.50]
+    --alpha2=<f>               rmax/r0 threshold for unvoiced decision [default: 0.35]
 
 Arguments:
     input-wav   Wave file with the audio signal
@@ -62,14 +68,17 @@ int main(int argc, const char *argv[]) {
     std::string input_wav = args["<input-wav>"].asString();
     std::string output_txt = args["<output-txt>"].asString();
 
+    float frame_len   = stof(args["--frame-len"].asString());
+    float frame_shift = stof(args["--frame-shift"].asString());
+    float min_f0      = stof(args["--min-f0"].asString());
+    float max_f0      = stof(args["--max-f0"].asString());
     float alpha0 = stof(args["--alpha0"].asString());
     float alpha1 = stof(args["--alpha1"].asString());
     float alpha2 = stof(args["--alpha2"].asString());
 
-    float frame_len   = 0.030F;
-    float frame_shift = 0.015F;
-    float min_f0      = 50.0F;
-    float max_f0      = 500.0F;
+    //frame_len = 0.030;
+    //frame_shift = 0.015;
+
     // Read input sound file
     unsigned int rate;
     vector<float> x;
@@ -82,7 +91,7 @@ int main(int argc, const char *argv[]) {
     int n_shift = (int)(rate * frame_shift);
 
     // Define analyzer
-    PitchAnalyzer analyzer(n_len, rate, PitchAnalyzer::HAMMING, min_f0, max_f0);
+    PitchAnalyzer analyzer(n_len, rate, PitchAnalyzer::HAMMING, min_f0, max_f0, alpha0, alpha1, alpha2);
 
     /// \TODO
     /// Preprocess the input signal in order to ease pitch estimation. For instance,
@@ -133,7 +142,7 @@ int main(int argc, const char *argv[]) {
             x[n] /= max_abs;
     }
 
-    float C_L = 0.017;
+    float C_L = 0.01;
     for (size_t n = 0; n < x.size(); ++n) {
         if(x[n] >= C_L){
           x[n] = x[n] - C_L;
@@ -144,6 +153,7 @@ int main(int argc, const char *argv[]) {
         }
     }
 
+    /*
     // Preprocessing: LPF + decimation (20 kHz -> 10 kHz)
     if (rate > 10000) {
         vector<float> b_lpf = {0.2929F, 0.5858F, 0.2929F};
@@ -158,12 +168,7 @@ int main(int argc, const char *argv[]) {
         x.swap(x_dec);
         rate = 10000;
     }
-
-    int n_len   = (int)(rate * frame_len   + 0.5F);
-    int n_shift = (int)(rate * frame_shift + 0.5F);
-
-    PitchAnalyzer analyzer(n_len, rate, PitchAnalyzer::HAMMING, min_f0, max_f0,
-                           alpha0, alpha1, alpha2);
+    */
 
     // Iterate for each frame and save values in f0 vector
     vector<float>::iterator iX;
@@ -191,20 +196,18 @@ int main(int argc, const char *argv[]) {
     mean = mean/f0.size();
 
     // Error correction
-    /*
-    float dist_threshold = 100;
+    float dist_threshold = 360;
     float dist = 0;
     for (iX = f0.begin()+1; iX != f0.end()-1; ++iX){
-      dist = *iX - *(iX-1);
+      dist = fabs(*iX - *(iX-1));
       if(dist > dist_threshold){
-        if((*iX-mean) >= (*(iX-1)-mean)){
-          *iX = mean;
+        if(fabs(*iX-mean) >= fabs(*(iX-1)-mean)){
+          *iX = *(iX-1);
         } else{
-          *(iX-1) = mean;
+          *(iX-1) = *iX;
         }
       }
     }
-    */
 
     // Write f0 contour into the output file
     ofstream os(output_txt);

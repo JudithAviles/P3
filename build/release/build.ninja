@@ -95,6 +95,14 @@ build scripts/run_get_pitch: CUSTOM_COMMAND /home/judith/PAV/P3/scripts/run_get_
  COMMAND = /usr/bin/ln -sf /home/judith/PAV/P3/scripts/run_get_pitch.sh /home/judith/PAV/bin/run_get_pitch
  description = Generating$ scripts/run_get_pitch.sh$ with$ a$ custom$ command
 
+build scripts/grid_search: CUSTOM_COMMAND /home/judith/PAV/P3/scripts/grid_search.sh | /usr/bin/ln
+ COMMAND = /usr/bin/ln -sf /home/judith/PAV/P3/scripts/grid_search.sh /home/judith/PAV/bin/grid_search
+ description = Generating$ scripts/grid_search.sh$ with$ a$ custom$ command
+
+build scripts/plot_analysis: CUSTOM_COMMAND /home/judith/PAV/P3/scripts/plot_analysis.py | /usr/bin/ln
+ COMMAND = /usr/bin/ln -sf /home/judith/PAV/P3/scripts/plot_analysis.py /home/judith/PAV/bin/plot_analysis
+ description = Generating$ scripts/plot_analysis.py$ with$ a$ custom$ command
+
 build doc: phony meson-internal__doc
 
 build meson-internal__doc: CUSTOM_COMMAND  | /usr/bin/doxygen src/doxyfile/Doxyfile
@@ -142,7 +150,7 @@ build meson-internal__uninstall: CUSTOM_COMMAND PHONY
  COMMAND = /usr/bin/meson --internal uninstall
  pool = console
 
-build all: phony meson-test-prereq meson-benchmark-prereq src/pav/libpav.a src/get_pitch/get_pitch src/get_pitch/pitch_evaluate scripts/run_get_pitch
+build all: phony meson-test-prereq meson-benchmark-prereq src/pav/libpav.a src/get_pitch/get_pitch src/get_pitch/pitch_evaluate scripts/run_get_pitch scripts/grid_search scripts/plot_analysis
 
 build meson-test-prereq: phony 
 

@@ -4,9 +4,9 @@ set -o pipefail
 
 GETF0="get_pitch"
 
-POT=${1:--40}
-R1=${2:-0.30}
-RMAX=${3:-0.40}
+POT=${1:--42}
+R1=${2:-0.47}
+RMAX=${3:-0.33}
 
 for fwav in pitch_db/train/*.wav; do
     ff0=${fwav/.wav/.f0}

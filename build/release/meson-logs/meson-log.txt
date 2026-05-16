@@ -1,4 +1,4 @@
-Build started at 2026-05-15T22:14:52.612342
+Build started at 2026-05-16T12:58:44.831586
 Main binary: /usr/bin/python3
 Build Options: -Dprefix=/home/judith/PAV -Dlibdir=lib -Dbuildtype=release
 Python system: Linux
@@ -39,7 +39,7 @@ Target machine cpu family: x86_64
 Target machine cpu: x86_64
 Program doxygen found: YES (/usr/bin/doxygen)
 Configuring Doxyfile using configuration
-Build targets in project: 5
+Build targets in project: 7
 
 Práctica 3 de PAV - detección de pitch v2.0
 
@@ -50,18 +50,18 @@ Práctica 3 de PAV - detección de pitch v2.0
 
 Found ninja-1.11.1 at /usr/bin/ninja
 Running compile:
-Working directory:  /tmp/tmpmxyjr512
+Working directory:  /tmp/tmp89avx6hr
 Code:
  int i = static_cast<int>(0);
 -----------
-Command line: `c++ /tmp/tmpmxyjr512/testfile.cpp -o /tmp/tmpmxyjr512/output.obj -D_FILE_OFFSET_BITS=64 -c -std=c++11` -> 0
+Command line: `c++ /tmp/tmp89avx6hr/testfile.cpp -o /tmp/tmp89avx6hr/output.obj -D_FILE_OFFSET_BITS=64 -c -std=c++11` -> 0
 Compiler accepts -std=c++11: YES
 Running compile:
-Working directory:  /home/judith/PAV/P3/build/release/meson-private/tmpvstm5bkk
+Working directory:  /home/judith/PAV/P3/build/release/meson-private/tmpwey6gclp
 Code:
  
 -----------
-Command line: `c++ /home/judith/PAV/P3/build/release/meson-private/tmpvstm5bkk/testfile.cpp -o /home/judith/PAV/P3/build/release/meson-private/tmpvstm5bkk/output.obj -c -D_FILE_OFFSET_BITS=64 -O0 -fpermissive --print-search-dirs` -> 0
+Command line: `c++ /home/judith/PAV/P3/build/release/meson-private/tmpwey6gclp/testfile.cpp -o /home/judith/PAV/P3/build/release/meson-private/tmpwey6gclp/output.obj -c -D_FILE_OFFSET_BITS=64 -O0 -fpermissive --print-search-dirs` -> 0
 stdout:
 install: /usr/lib/gcc/x86_64-linux-gnu/13/
 programs: =/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../../x86_64-linux-gnu/bin/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../../x86_64-linux-gnu/bin/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../../x86_64-linux-gnu/bin/

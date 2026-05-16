@@ -66,11 +66,12 @@ namespace upc {
       npitch_max = frameLen/2;
   }
 
+  /*
   void PitchAnalyzer::set_unvoiced_thresholds(float pot, float r1, float rmax) {
     pot_threshold = pot;
     r1norm_threshold = r1;
     rmaxnorm_threshold = rmax;
-  }
+  }*/
 
   /*
   float PitchAnalyzer::compute_zcr(const vector<float> &x, unsigned int N, float fm) const {

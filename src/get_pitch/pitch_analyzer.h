@@ -55,11 +55,11 @@ namespace upc {
     PitchAnalyzer(	unsigned int fLen,			///< Frame length in samples
 					unsigned int sFreq,			///< Sampling rate in Hertzs
 					Window w = PitchAnalyzer::HAMMING,	///< Window type
-					float min_F0 = MIN_F0,		///< Pitch range should be restricted to be above this value
-					float max_F0 = MAX_F0,		///< Pitch range should be restricted to be below this value
-					float potTh = -40.0F,
-					float r1nTh = 0.50F,
-					float rmaxnTh = 0.35F
+					float min_F0 = 20,		///< Pitch range should be restricted to be above this value
+					float max_F0 = 500,		///< Pitch range should be restricted to be below this value
+					float potTh = -40.0F,    ///< Llindar de potència per unvoiced decision
+					float r1nTh = 0.50F,    ///< Llindar de r[1]/r[0] per unvoiced decision
+					float rmaxnTh = 0.35F   ///< Llindar de r[P]/r[0] per unvoiced decision
 				 )
 	  {
       frameLen = fLen;
@@ -68,6 +68,7 @@ namespace upc {
       r1norm_threshold = r1nTh;
       rmaxnorm_threshold = rmaxnTh;
       set_f0_range(min_F0, max_F0);
+      //set_unvoiced_thresholds(potTh, r1nTh, rmaxnTh);
       set_window(w);
     }
 
@@ -113,7 +114,7 @@ namespace upc {
 	///
     void set_f0_range(float min_F0, float max_F0);
 
-    void set_unvoiced_thresholds(float pot, float r1, float rmax);
+    //void set_unvoiced_thresholds(float pot, float r1, float rmax);
   };
 }
 #endif
