@@ -7,6 +7,7 @@
 #include <errno.h>
 #include <math.h>
 #include <map>
+#include <algorithm>
 
 #include <complex>
 #include <numeric>
@@ -14,6 +15,7 @@
 
 #include "wavfile_mono.h"
 #include "pitch_analyzer.h"
+#include "digital_filter.h"
 
 #include "docopt.h"
 
@@ -32,12 +34,9 @@ Usage:
     get_pitch --version
 
 Options:
-    -h, --help  Show this screen
-    --version   Show the version of the project
-    --min-f0=<Hz>              Minimum F0 in Hz [default: 50]
-    --max-f0=<Hz>              Maximum F0 in Hz [default: 500]
-    --frame-len=<s>            Frame length in seconds [default: 0.030]
-    --frame-shift=<s>          Frame shift in seconds [default: 0.015]
+    --alpha0=<dB>              Power threshold for unvoiced decision [default: -40]
+    --alpha1=<f>               r1/r0 threshold for unvoiced decision [default: 0.30]
+    --alpha2=<f>               rmax/r0 threshold for unvoiced decision [default: 0.40]
 
 Arguments:
     input-wav   Wave file with the audio signal
@@ -63,11 +62,14 @@ int main(int argc, const char *argv[]) {
     std::string input_wav = args["<input-wav>"].asString();
     std::string output_txt = args["<output-txt>"].asString();
 
-    float frame_len   = stof(args["--frame-len"].asString());
-    float frame_shift = stof(args["--frame-shift"].asString());
-    float min_f0      = stof(args["--min-f0"].asString());
-    float max_f0      = stof(args["--max-f0"].asString());
+    float alpha0 = stof(args["--alpha0"].asString());
+    float alpha1 = stof(args["--alpha1"].asString());
+    float alpha2 = stof(args["--alpha2"].asString());
 
+    float frame_len   = 0.030F;
+    float frame_shift = 0.015F;
+    float min_f0      = 50.0F;
+    float max_f0      = 500.0F;
     // Read input sound file
     unsigned int rate;
     vector<float> x;
@@ -141,6 +143,27 @@ int main(int argc, const char *argv[]) {
           x[n] = 0;
         }
     }
+
+    // Preprocessing: LPF + decimation (20 kHz -> 10 kHz)
+    if (rate > 10000) {
+        vector<float> b_lpf = {0.2929F, 0.5858F, 0.2929F};
+        vector<float> a_lpf = {1.0F, 0.0F, 0.1716F};
+        DigitalFilter lpf(a_lpf, b_lpf);
+        vector<float> x_filt(x.size());
+        for (size_t i = 0; i < x.size(); ++i)
+            x_filt[i] = lpf(x[i]);
+        vector<float> x_dec;
+        for (size_t i = 0; i < x_filt.size(); i += 2)
+            x_dec.push_back(x_filt[i]);
+        x.swap(x_dec);
+        rate = 10000;
+    }
+
+    int n_len   = (int)(rate * frame_len   + 0.5F);
+    int n_shift = (int)(rate * frame_shift + 0.5F);
+
+    PitchAnalyzer analyzer(n_len, rate, PitchAnalyzer::HAMMING, min_f0, max_f0,
+                           alpha0, alpha1, alpha2);
 
     // Iterate for each frame and save values in f0 vector
     vector<float>::iterator iX;
