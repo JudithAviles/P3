@@ -58,10 +58,10 @@ namespace upc {
 					float min_F0 = MIN_F0,		///< Pitch range should be restricted to be above this value
 					float max_F0 = MAX_F0,		///< Pitch range should be restricted to be below this value
 					float potTh = -40.0F,
-					float r1nTh = 0.30F,
-					float rmaxnTh = 0.40F
+					float r1nTh = 0.50F,
+					float rmaxnTh = 0.35F
 				 )
-	{
+	  {
       frameLen = fLen;
       samplingFreq = sFreq;
       pot_threshold = potTh;

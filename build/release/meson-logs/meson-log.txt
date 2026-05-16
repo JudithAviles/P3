@@ -1,4 +1,4 @@
-Build started at 2026-04-24T09:12:28.721298
+Build started at 2026-05-15T22:14:52.612342
 Main binary: /usr/bin/python3
 Build Options: -Dprefix=/home/judith/PAV -Dlibdir=lib -Dbuildtype=release
 Python system: Linux
@@ -50,18 +50,18 @@ Práctica 3 de PAV - detección de pitch v2.0
 
 Found ninja-1.11.1 at /usr/bin/ninja
 Running compile:
-Working directory:  /tmp/tmpzw0y05be
+Working directory:  /tmp/tmpmxyjr512
 Code:
  int i = static_cast<int>(0);
 -----------
-Command line: `c++ /tmp/tmpzw0y05be/testfile.cpp -o /tmp/tmpzw0y05be/output.obj -D_FILE_OFFSET_BITS=64 -c -std=c++11` -> 0
+Command line: `c++ /tmp/tmpmxyjr512/testfile.cpp -o /tmp/tmpmxyjr512/output.obj -D_FILE_OFFSET_BITS=64 -c -std=c++11` -> 0
 Compiler accepts -std=c++11: YES
 Running compile:
-Working directory:  /home/judith/PAV/P3/build/release/meson-private/tmpmw632zt1
+Working directory:  /home/judith/PAV/P3/build/release/meson-private/tmpvstm5bkk
 Code:
  
 -----------
-Command line: `c++ /home/judith/PAV/P3/build/release/meson-private/tmpmw632zt1/testfile.cpp -o /home/judith/PAV/P3/build/release/meson-private/tmpmw632zt1/output.obj -c -D_FILE_OFFSET_BITS=64 -O0 -fpermissive --print-search-dirs` -> 0
+Command line: `c++ /home/judith/PAV/P3/build/release/meson-private/tmpvstm5bkk/testfile.cpp -o /home/judith/PAV/P3/build/release/meson-private/tmpvstm5bkk/output.obj -c -D_FILE_OFFSET_BITS=64 -O0 -fpermissive --print-search-dirs` -> 0
 stdout:
 install: /usr/lib/gcc/x86_64-linux-gnu/13/
 programs: =/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../../x86_64-linux-gnu/bin/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../../x86_64-linux-gnu/bin/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/../../../../x86_64-linux-gnu/bin/

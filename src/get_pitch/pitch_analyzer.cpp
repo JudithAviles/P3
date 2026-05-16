@@ -13,7 +13,7 @@ namespace upc {
     for (unsigned int l = 0; l < r.size(); ++l) {
   		/**
       \TODO Compute the normalized autocorrelation r[l]
-      \DONE Autocorrelación calculada:
+      \DONE Autocorrelació calculada:
       \f[
       r[l] = \frac{1}{N} \sum_{n=l}^{N} x[n] \cdot x[n-l]
       \f]
@@ -42,14 +42,14 @@ namespace upc {
     switch (win_type) {
     case HAMMING:
       /// \TODO Implement the Hamming window
+      /// \DONE Finestra de Hamming implementada
       for (unsigned int n = 0; n < frameLen; ++n){
         window[n] = 0.54 - 0.46*cos(2*M_PI*n/(frameLen-1));
       }
       break;
     case RECT:
-      window.assign(frameLen, 1);
-      break;
     default:
+      window.assign(frameLen, 1);
       break;
     }
   }
@@ -72,21 +72,43 @@ namespace upc {
     rmaxnorm_threshold = rmax;
   }
 
+  /*
+  float PitchAnalyzer::compute_zcr(const vector<float> &x, unsigned int N, float fm) const {
+    int sum = 0;
+    int i;
+    for(i = 1; i < N; i++) {
+        if ((x[i] >= 0 && x[i-1] < 0) || (x[i] <= 0 && x[i-1] > 0)) {
+            sum++;
+        }
+    }
+    float zcr = (sum * fm) / (2*(N-1));
+    return zcr;
+  }
+  */
+
   bool PitchAnalyzer::unvoiced(float pot, float r1norm, float rmaxnorm) const {
-    /*
-    Decision rule improved:
-    - pot: 10*log10(r[0]), log-power in dB (after normalization to [-1,1])
-    - r1norm: r[1]/r[0], normalized correlation at lag 1
-    - rmaxnorm: r[lag_max]/r[0], normalized correlation at pitch period
+    /**
+    \TODO Implement a rule to decide whether the sound is voiced or not.
+    * You can use the standard features (pot, r1norm, rmaxnorm),
+        or compute and use other ones.
+    \DONE Decision rule improved:
+    * pot: 10*log10(r[0]), log-power in dB (after normalization to [-1,1])
+    * r1norm: r[1]/r[0], normalized correlation at lag 1
+    * rmaxnorm: r[lag_max]/r[0], normalized correlation at pitch period
     */
 
-    if (pot < pot_threshold)
+    // Señales sonoras tienden a tener bajas frecuencias por la resonancia con el tracto vocal --> r[1] >0
+    // Las sordas tienden a ser de alta frecuencia  --> r[1] < 0
+    // Siempre referido a fm/4 --> Varía con fm
+
+    // Para implementar --> Zero-Crossings, Cepstrum, AMDF
+    if (pot < pot_threshold){
       return true;
-
-    if (r1norm > r1norm_threshold && rmaxnorm > rmaxnorm_threshold)
+    } else if (r1norm >= r1norm_threshold && rmaxnorm >= rmaxnorm_threshold){
       return false;
-
-    return true;
+    } else{
+      return true;
+    }
   }
 
   float PitchAnalyzer::compute_pitch(vector<float> & x) const {
@@ -114,9 +136,7 @@ namespace upc {
 	  - The lag corresponding to the maximum value of the pitch.
   .
 	In either case, the lag should not exceed that of the minimum value of the pitch.
-  \DONE A basic search for the maximum value of the autocorrelation away from the origin has been implemented.
-  Nevertheless, the method could be more efficient. --> Maybe use std::max_element()? o iteradores
-  To be done: implementation of a rule for unvoiced segments
+  \DONE A basic search for the maximum value of the autocorrelation away from the origin, as well as a rule for unvoiced segments have been implemented.
   */
 
     for(iR = iRMax; (iR < r.begin()+npitch_max-1 && iR < r.end()); iR++){
@@ -132,7 +152,7 @@ namespace upc {
     //You can print these (and other) features, look at them using wavesurfer
     //Based on that, implement a rule for unvoiced
     //change to #if 1 and compile
-#if 0
+#if 1
     if (r[0] > 0.0F)
       cout << pot << '\t' << r[1]/r[0] << '\t' << r[lag]/r[0] << endl;
 #endif

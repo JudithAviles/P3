@@ -39,6 +39,7 @@ Ejercicios básicos
 	    principales candidatos para determinar la sonoridad de la voz: el nivel de potencia de la señal
 		(r[0]), la autocorrelación normalizada de uno (r1norm = r[1] / r[0]) y el valor de la
 		autocorrelación en su máximo secundario (rmaxnorm = r[lag] / r[0]).
+    [alt text](wavesurfer_parameters.png)
 
 		Puede considerar, también, la conveniencia de usar la tasa de cruces por cero.
 
@@ -93,6 +94,9 @@ Ejercicios de ampliación
   por implementar el filtro de mediana, se valorará el análisis de los resultados obtenidos en función de
   la longitud del filtro.
    
+Finestra Hamming --> No afecta pràcticament res als resultats
+
+Filtro de mediana --> Con 3 mejora el porcentaje, con tamaño 5 empieza a empeorar, con tamaño 7 llegamos a erores catastróficos (menos de un 15% en la evaluación).
 
 Evaluación *ciega* del estimador
 -------------------------------
