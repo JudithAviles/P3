@@ -111,7 +111,7 @@ hacerlo. Se valorará la utilización de la biblioteca matplotlib de Python.
 	  Aunque puede usar el propio Wavesurfer para obtener la representación, se valorará
 		el uso de alternativas de mayor calidad (particularmente Python).
 
-      Podemos observar que nuestra estimación es muy cercana a la obtenida por Wavesurfer. Únicamente se detecta tono en los segmentos apropiados y los segmentos sordos son etiquetados apropiadamente, con una pequeña cantidad de error en las secciones de traspaso de sordo a sonoro y de sonoro a sordo. El tono estimado en sí también es muy correcto, aunque comete algún error en los picos y cambios repentinos a causa del postprocesado aplicado (el filtro de mediana y la prevención de errores).
+      *Podemos observar que nuestra estimación es muy cercana a la obtenida por Wavesurfer. Únicamente se detecta tono en los segmentos apropiados y los segmentos sordos son etiquetados apropiadamente, con una pequeña cantidad de error en las secciones de traspaso de sordo a sonoro y de sonoro a sordo. El tono estimado en sí también es muy correcto, aunque comete algún error en los picos y cambios repentinos a causa del postprocesado aplicado (el filtro de mediana y la prevención de errores).*
   
   * Optimice los parámetros de su sistema de estimación de pitch e inserte una tabla con las tasas de error
     y el *score* TOTAL proporcionados por `pitch_evaluate` en la evaluación de la base de datos 
@@ -125,8 +125,8 @@ hacerlo. Se valorará la utilización de la biblioteca matplotlib de Python.
     | -43         | 0.48           | 0.34            |0.011            | 91.45%      |
     | -41         | 0.46           | 0.32            |0.009            | 91.19%      |
 
-    Parámetros optimizados: alpha0=-42, alpha1=0.48, alpha2=0.34, alpha3=0.012.
-    Hemos optimizado los parámetros a través del script `grid_search.sh`, el cual nos ha permitido comprobar múltiples combinaciones de diferentes valores para cada parámetro para encontrar la que nos daría el score máximo. Antes de utilizar `grid_search`se ha hecho una búsqueda inicial de valores apropiados manual para reducir la cantidad de valores a buscar en `grid_search` y reducir su tiempo de computación.
+    *Parámetros optimizados: alpha0=-42, alpha1=0.48, alpha2=0.34, alpha3=0.012.*
+    *Hemos optimizado los parámetros a través del script `grid_search.sh`, el cual nos ha permitido comprobar múltiples combinaciones de diferentes valores para cada parámetro para encontrar la que nos daría el score máximo. Antes de utilizar `grid_search`se ha hecho una búsqueda inicial de valores apropiados manual para reducir la cantidad de valores a buscar en `grid_search` y reducir su tiempo de computación.*
 
 Ejercicios de ampliación
 ------------------------
@@ -141,7 +141,7 @@ Ejercicios de ampliación
   * Inserte un *pantallazo* en el que se vea el mensaje de ayuda del programa y un ejemplo de utilización
     con los argumentos añadidos.
 
-    ![Pantallazo de `get_pitch -h`](get_pitch -h.png)
+    ![Pantallazo de `get_pitch -h`](get_pitch_-h.png)
 
     Ejemplo de uso:
     ```bash
@@ -175,32 +175,39 @@ la longitud del filtro.
 ## Técnicas Implementadas
 
 ### Preprocesado
-- **Filtro paso bajo (LPF)**: Filtro de averaging (3x1) para suavizar la señal
+- **Filtro paso bajo (LPF)**: Filtro de averaging (3x1) para suavizar la señal. 
+
   Para implementar el filtro paso bajo se han probado diferentes tipos de LPF y diferentes tamaños para estos.
 
   Probamos a implementar un filtro butterworth de orden 4, pero, además de incrementar el coste computacional del programa, no fue muy efectivo, y causaba un aumento en la tasa de segmentos sordos identificados como sonoros.
 
   Como alternativa, hemos implementado un filtro pasabajo más simple y fácil de optimizar: un filtro de averaging. Hemos probado diferentes tamaños (2x1, 3x1, 5x1) y determinado que 3x1 es el mejor. Con 2x1 no se tiene en cuenta la muestra posterior y acaba causando fine errors. En cambio, con tamaño 5x1 se hace media entre demasiadas muestras y se aplana demasiado la señal. Con 3x1 evitamos estos dos problemas.
 
-- **Normalización**: Ajuste de amplitud al rango [-1, 1]  
+- **Normalización**: Ajuste de amplitud al rango [-1, 1]. 
+
   Ajustar la amplitud del rango nos permite aplicar los thresholds y procesados de manera objetiva, sin ser afectados por las variaciones en amplitud máxima entre diferentes señales.
 
-- **Center Clipping**: Umbral C_L=0.01 para reducir efectos de formantes
+- **Center Clipping**: Umbral C_L=0.01 para reducir efectos de formantes. 
+
   Center clipping reduce el efecto de los formantes y limpia la autocorrelación para identificar más fácilmente el pico correspondiente al periodo de la señal. Al haber normalizado previamente la señal podemos aplicar un center clipping apropiado para toda señal de entrada.
 
 ### Métodos de estimación
 - **Autocorrelación**: Método por defecto (`--method=autocorr`)
-- **AMDF**: Average Magnitude Difference Function (`--method=amdf`)
+- **AMDF**: Average Magnitude Difference Function (`--method=amdf`). 
+
   La AMDF es un método computacionalmente menos costoso a la autocorrelación pero parecido a este. Nos permite encontrar el pitch encontrando el argumento para el cual este es mínimo (fuera del origen). Tiene resultados buenos, pero como el center clipping no es tan efectivo para AMDF, los resultados con la autocorrelación son mejores.
 
-- **Cepstrum**: Análisis cepstral (`--method=cepstrum`)
+- **Cepstrum**: Análisis cepstral (`--method=cepstrum`). 
+
   El cepstrum también nos permite estimar el tono encontrando su valor máximo (fuera del origen). Aunque tiene la posibilidad de también dar muy buenos resultados, hemos preferido utilizar la autocorrelación, ya que el calcular el cepstrum impone una carga computacional más grande sobre el programa y su run-time es demasiado grande (~3 min para `run_get_pitch`).
 
 ### Postprocesado
-- **Filtro de mediana**: Tamaño 3 (óptimo), elimina valores atípicos aislados
+- **Filtro de mediana**: Tamaño 3 (óptimo), elimina valores atípicos aislados. 
+
   Al igual que con el filtro averaging, hemos probado diferentes tamaños para el filtro de mediana para encontrar el óptimo. Encontramos los mismos problemas que con el filtro averaging, y como el caso anterior, el filtro de tamaño 3 es óptimo para evitar desplazamientos de la señal y evitar aplanar demasiado. También se probó el filtro de tamaño 7, con resultados catastróficos (<15%). Aun así, podemos observar en los resultados que el filtro de mediana de tamaño 3 acaba eliminando algunos picos y saltos que realmente existían en la señal.
 
-- **Corrección de errores**: Elimina picos anormales (>360Hz diferencia)
+- **Corrección de errores**: Elimina picos anormales (>360Hz diferencia). 
+
   En el caso de que múltiples muestras consecutivas tengan valores erróneos, la corrección de errores nos permite ajustar el tono de salida para evitar saltos repentinos demasiado grandes para ser correctos. Se compara el tono estimado del segmento con el del segmento anterior y, si la distancia entre estos supera el threshold, se determina que existe un error y se escoge de entre las dos muestras el valor más cercano a la media de la señal, y se asigna este a ambas.
 
 ### Parámetros optimizados
