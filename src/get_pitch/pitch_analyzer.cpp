@@ -144,7 +144,7 @@ namespace upc {
     // Las sordas tienden a ser de alta frecuencia  --> r[1] < 0
     // Siempre referido a fm/4 --> Varía con fm
 
-    if (pot < pot_threshold || zcr < 0.012*samplingFreq/2){
+    if (pot < pot_threshold || zcr < zcr_threshold*samplingFreq/2){
     //if (pot < pot_threshold && zcr < 0.1*samplingFreq/2){
       return true;
     } else if (r1norm >= r1norm_threshold && rmaxnorm >= rmaxnorm_threshold){

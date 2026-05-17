@@ -75,11 +75,12 @@ namespace upc {
 					unsigned int sFreq,			///< Sampling rate in Hertzs
 					Params w = PitchAnalyzer::HAMMING,	///< Window type
           Params method_choice = PitchAnalyzer::CORRELACIO,	  ///< Method used for the unvoiced choice
-					float min_F0 = 20,		///< Pitch range should be restricted to be above this value
-					float max_F0 = 500,		///< Pitch range should be restricted to be below this value
-					float potTh = -42.0F,    ///< Llindar de potència per unvoiced decision
-					float r1nTh = 0.47F,    ///< Llindar de r[1]/r[0] per unvoiced decision
-					float rmaxnTh = 0.33F   ///< Llindar de r[P]/r[0] per unvoiced decision
+					float min_F0 = 20,		        ///< Pitch range should be restricted to be above this value
+					float max_F0 = 500,		        ///< Pitch range should be restricted to be below this value
+					float potTh = -42.0F,         ///< Llindar de potència per unvoiced decision
+					float r1nTh = 0.47F,          ///< Llindar de r[1]/r[0] per unvoiced decision
+					float rmaxnTh = 0.33F,        ///< Llindar de r[P]/r[0] per unvoiced decision
+          float zcrTh = 0.012F        ///< Llindar de zcr per unvoiced decision
 				 )
 	  {
       frameLen = fLen;
@@ -87,6 +88,7 @@ namespace upc {
       pot_threshold = potTh;
       r1norm_threshold = r1nTh;
       rmaxnorm_threshold = rmaxnTh;
+      zcr_threshold = zcrTh;
       unvoiced_choice = method_choice;
       set_f0_range(min_F0, max_F0);
       //set_unvoiced_thresholds(potTh, r1nTh, rmaxnTh);
