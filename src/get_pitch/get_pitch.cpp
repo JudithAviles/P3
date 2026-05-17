@@ -82,9 +82,9 @@ int main(int argc, const char *argv[]) {
 
     string method_str = args["--method"].asString();
     PitchAnalyzer::Params method;
-    if (method_str == "amdf")
+    if (method_str == "amdf" || method_str == "Amdf" || method_str == "AMDF")
       method = PitchAnalyzer::AMDF;
-    else if (method_str == "cepstrum")
+    else if (method_str == "cepstrum" || method_str == "Cepstrum" || method_str == "CEPSTRUM")
       method = PitchAnalyzer::CEPSTRUM;
     else
       method = PitchAnalyzer::CORRELACIO;
