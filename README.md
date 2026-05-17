@@ -16,21 +16,21 @@ Ejercicios básicos
    * Complete el cálculo de la autocorrelación e inserte a continuación el código correspondiente.
 
      ```cpp
-      // Autocorrelation computation (biased)
-      if (r[0] == 0.0F) //to avoid log() and divide zero 
-        r[0] = 1e-10; 
-      void PitchAnalyzer::autocorrelation(const vector<float> &x, vector<float> &r) const {
-        for (unsigned int l = 0; l < r.size(); ++l) {
-          r[l] = 0;
-          int N = x.size();
-          for (int n = l; n < N; ++n){
-            r[l] += x[n]*x[n-l];
-          }
-          r[l] = r[l]/N;
-        }
-        if (r[0] == 0.0F) r[0] = 1e-10; 
-      }
-     ```
+     // Autocorrelation computation (biased)
+     if (r[0] == 0.0F) //to avoid log() and divide zero 
+       r[0] = 1e-10; 
+     void PitchAnalyzer::autocorrelation(const vector<float> &x, vector<float> &r) const {
+     for (unsigned int l = 0; l < r.size(); ++l) {
+         r[l] = 0;
+         int N = x.size();
+         for (int n = l; n < N; ++n){
+           r[l] += x[n]*x[n-l];
+         }
+         r[l] = r[l]/N;
+       }
+       if (r[0] == 0.0F) r[0] = 1e-10; 
+     }
+    ```
      Formula: r[l] = (1/N) * sum(x[n] * x[n-l]) for n=l to N
 
    * Inserte una gŕafica donde, en un *subplot*, se vea con claridad la señal temporal de un segmento de
