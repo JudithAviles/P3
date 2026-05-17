@@ -23,3 +23,7 @@
 5	1196	1779003365315084349	src/get_pitch/get_pitch.p/pitch_analyzer.cpp.o	ba4478b8b8b587ba
 1196	1666	1779003365779121478	src/get_pitch/get_pitch	a9f4f46e742b948f
 1666	2360	0	meson-internal__install	9bd7faa9472bf40f
+6	12	1778945862391196672	scripts/run_get_pitch	45e6a373f0d23cec
+6	12	1779003186891597563	scripts/grid_search	f470319cbcd7b478
+7	12	1779003556637034555	scripts/plot_analysis	758f734b7ab8c62c
+12	808	0	meson-internal__install	9bd7faa9472bf40f
