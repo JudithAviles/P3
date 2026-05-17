@@ -220,6 +220,8 @@ la longitud del filtro.
 
   Como se ha comentado en apartados previos, se ha utilizado el script `grid_search` para optimizar los parámetros y encontrar la combinación más óptima de estos.
 
+  ![Pantallazo de `get_pitch -h`](grid_search.png)
+
 
 Evaluación *ciega* del estimador
 -------------------------------
