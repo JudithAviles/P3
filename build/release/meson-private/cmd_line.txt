@@ -1,7 +1,0 @@
-[options]
-prefix = /home/tomas/PAV
-libdir = lib
-buildtype = release
-
-[properties]
-
