@@ -41,10 +41,10 @@ Options:
     --frame-len=<s>            Frame length in seconds [default: 0.030]
     --frame-shift=<s>          Frame shift in seconds [default: 0.015]
     --alpha0=<dB>              Power threshold for unvoiced decision [default: -42]
-    --alpha1=<f>               r1/r0 threshold for unvoiced decision [default: 0.47]
-    --alpha2=<f>               rmax/r0 threshold for unvoiced decision [default: 0.33]
+    --alpha1=<f>               r1/r0 threshold for unvoiced decision [default: 0.48]
+    --alpha2=<f>               rmax/r0 threshold for unvoiced decision [default: 0.34]
     --alpha3=<f>               rmax/r0 threshold for unvoiced decision [default: 0.012]
-    --method=<name>            Method: autocorr, amdf, cepstrum [default: autocorr]
+    --method=<name>            Method: autocorr, amdf, cepstrum [default: autocorrelació]
 
 Arguments:
     input-wav   Wave file with the audio signal
@@ -52,11 +52,6 @@ Arguments:
                     - One line per frame with the estimated f0
                     - If considered unvoiced, f0 must be set to f0 = 0
 )";
-
-
-// A añadir al docopt --> Threshold zcr, unvoiced analysis choice (string)?
-
-
 
 
 int main(int argc, const char *argv[]) {
@@ -94,9 +89,6 @@ int main(int argc, const char *argv[]) {
     else
       method = PitchAnalyzer::CORRELACIO;
 
-    //frame_len = 0.030;
-    //frame_shift = 0.015;
-
     // Read input sound file
     unsigned int rate;
     vector<float> x;
@@ -117,36 +109,12 @@ int main(int argc, const char *argv[]) {
     /// \DONE S'ha implementat center-clipping per reduir els efectes dels formants.
     /// També es normalitza el senyal per poder comparar de manera objectiva les característiques d'aquesta. 
 
-    // Filtre passbaix Butterworth 4 ordre
-    /*vector<float> y = x;
-    float fc = max_f0+50;
-    //float w_cd = 2*M_PI*(max_f0+50)/rate;
-    //float w_ac = 2*rate*tan(w_dc/2);
-    //float gamma = 2*rate/w_ac; 
-    float gamma = 1/tan(M_PI*fc/rate);
-    float alpha = -2*cos(5*M_PI/8);
-    float beta = -2*cos(7*M_PI/8);
-
-    float a0 = pow(gamma,4) + pow(gamma,3)*(alpha+beta) + pow(gamma,2)*(alpha*beta+2) + gamma*(alpha+beta) +1;
-    float a1 = -4*pow(gamma,4) - 2*pow(gamma,3)*(alpha+beta) + 2*gamma*(alpha+beta) + 4;
-    float a2 = 6*pow(gamma,4) - 2*pow(gamma,2)*(alpha*beta+2) + 6;
-    float a3 = -4*pow(gamma,4) + 2*pow(gamma,3)*(alpha+beta) - 2*gamma*(alpha+beta) + 4;
-    float a4 = pow(gamma,4) - pow(gamma,3)*(alpha+beta) + pow(gamma,2)*(alpha*beta+2) - gamma*(alpha+beta) + 1;
-    for(size_t n = 0; n < 4; n++){
-      y[n] = x[n];
-    }
-    for (size_t n = 4; n < x.size(); ++n) {
-        y[n] = (3*x[n] + x[n-1] + x[n-2] + x[n-3])/6;
-        //a0=1,a1=2⋅Re{pk},a2=|pk|^2
-        //y[n] = 1/a0*(x[n] + 4*x[n-1] + 6*x[n-2] + 4*x[n-3] + x[n-4] - a1*y[n-1] - a2*y[n-2] - a3*y[n-3] - a4*y[n-4]);
-    }*/
-
     // Filtre passbaix rudimentari (averaging filter)
     for (size_t n = 0; n < x.size(); ++n) {
         x[n] = (3*x[n] + x[n-1] + x[n-2] + x[n-3])/6;
     }
 
-    // Center Clipping
+    // Center Clipping+ Normalització
     float max_abs = 0.0F;
     float abs_val = 0.0F;
     for (size_t n = 0; n < x.size(); ++n) {
@@ -170,23 +138,6 @@ int main(int argc, const char *argv[]) {
           x[n] = 0;
         }
     }
-
-    /*
-    // Preprocessing: LPF + decimation (20 kHz -> 10 kHz)
-    if (rate > 10000) {
-        vector<float> b_lpf = {0.2929F, 0.5858F, 0.2929F};
-        vector<float> a_lpf = {1.0F, 0.0F, 0.1716F};
-        DigitalFilter lpf(a_lpf, b_lpf);
-        vector<float> x_filt(x.size());
-        for (size_t i = 0; i < x.size(); ++i)
-            x_filt[i] = lpf(x[i]);
-        vector<float> x_dec;
-        for (size_t i = 0; i < x_filt.size(); i += 2)
-            x_dec.push_back(x_filt[i]);
-        x.swap(x_dec);
-        rate = 10000;
-    }
-    */
 
     // Iterate for each frame and save values in f0 vector
     vector<float>::iterator iX;

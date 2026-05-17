@@ -24,10 +24,11 @@ namespace upc {
       */
       // La autocorrelación es sesgada; la senyal está enventanada y la consideramos cero
       r[l] = 0;
-      for (unsigned int n = l; n < x.size(); ++n){
+      int N = x.size();
+      for (int n = l; n < N; ++n){
         r[l] += x[n]*x[n-l];
       }
-      r[l] = r[l]/x.size();
+      r[l] = r[l]/N;
     }
 
     if (r[0] == 0.0F) //to avoid log() and divide zero 
@@ -50,10 +51,11 @@ namespace upc {
   void PitchAnalyzer::compute_AMDF(const vector<float> &x, vector<float> &d) const {
     for (unsigned int l = 0; l < d.size(); ++l) {
       d[l] = 0;
-      for (unsigned int n = l; n < x.size(); ++n){
+      int N = x.size();
+      for (int n = l; n < N; ++n){
         d[l] += fabs(x[n]-x[n-l]);
       }
-      d[l] = d[l]/x.size();
+      d[l] = d[l]/N;
     }
   }
 
@@ -117,13 +119,6 @@ namespace upc {
       npitch_max = frameLen/2;
   }
 
-  /*
-  void PitchAnalyzer::set_unvoiced_thresholds(float pot, float r1, float rmax) {
-    pot_threshold = pot;
-    r1norm_threshold = r1;
-    rmaxnorm_threshold = rmax;
-  }*/
-
   bool PitchAnalyzer::unvoiced(float pot, float r1norm, float rmaxnorm, float zcr) const {
     /**
     \TODO Implement a rule to decide whether the sound is voiced or not.
@@ -135,12 +130,11 @@ namespace upc {
     * rmaxnorm: r[lag_max]/r[0], normalized correlation at pitch period
     */
 
-    // Señales sonoras tienden a tener bajas frecuencias por la resonancia con el tracto vocal --> r[1] >0
+    // Señales sonoras tienden a tener bajas frecuencias por la resonancia con el tracto vocal --> r[1] > 0
     // Las sordas tienden a ser de alta frecuencia  --> r[1] < 0
     // Siempre referido a fm/4 --> Varía con fm
 
     if (pot < pot_threshold || zcr < zcr_threshold*samplingFreq/2){
-    //if (pot < pot_threshold && zcr < 0.1*samplingFreq/2){
       return true;
     } else if (r1norm >= r1norm_threshold && rmaxnorm >= rmaxnorm_threshold){
       return false;

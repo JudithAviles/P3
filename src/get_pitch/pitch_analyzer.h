@@ -29,17 +29,17 @@ namespace upc {
     void set_window(Params type); ///< pre-compute window
 
   private:
-    std::vector<float> window; ///< precomputed window
-    unsigned int frameLen, ///< length of frame (in samples). Has to be set in the constructor call
-      samplingFreq, ///< sampling rate (in samples per second). Has to be set in the constructor call
-      npitch_min, ///< minimum value of pitch period, in samples
-      npitch_max; ///< maximum value of pitch period, in samples
-    int unvoiced_choice;
-    float pot_threshold;
-    float r1norm_threshold;
-    float rmaxnorm_threshold;
-    float zcr_threshold;
- 
+    std::vector<float> window;    ///< precomputed window
+    unsigned int frameLen,        ///< length of frame (in samples). Has to be set in the constructor call
+      samplingFreq,               ///< sampling rate (in samples per second). Has to be set in the constructor call
+      npitch_min,                 ///< minimum value of pitch period, in samples
+      npitch_max;                 ///< maximum value of pitch period, in samples
+    int unvoiced_choice;          ///< method chosen for pitch estimation
+    float pot_threshold;          ///< power threshold for unvoiced choice
+    float r1norm_threshold;       ///< r[1]/r[0] threshold for unvoiced choice
+    float rmaxnorm_threshold;     ///< r[lag]/r[0] threshold for unvoiced choice
+    float zcr_threshold;          ///< zcr threshold for unvoiced choice
+
 	///
 	/// Computes correlation from lag=0 to r.size()
 	///
@@ -79,9 +79,9 @@ namespace upc {
 					float min_F0 = 20,		        ///< Pitch range should be restricted to be above this value
 					float max_F0 = 500,		        ///< Pitch range should be restricted to be below this value
 					float potTh = -42.0F,         ///< Llindar de potència per unvoiced decision
-					float r1nTh = 0.47F,          ///< Llindar de r[1]/r[0] per unvoiced decision
-					float rmaxnTh = 0.33F,        ///< Llindar de r[P]/r[0] per unvoiced decision
-          float zcrTh = 0.012F        ///< Llindar de zcr per unvoiced decision
+					float r1nTh = 0.48F,          ///< Llindar de r[1]/r[0] per unvoiced decision
+					float rmaxnTh = 0.34F,        ///< Llindar de r[P]/r[0] per unvoiced decision
+          float zcrTh = 0.012F          ///< Llindar de zcr per unvoiced decision
 				 )
 	  {
       frameLen = fLen;
@@ -92,7 +92,6 @@ namespace upc {
       zcr_threshold = zcrTh;
       unvoiced_choice = method_choice;
       set_f0_range(min_F0, max_F0);
-      //set_unvoiced_thresholds(potTh, r1nTh, rmaxnTh);
       set_window(w);
     }
 
@@ -137,8 +136,6 @@ namespace upc {
     /// Sets pitch range: takes min_F0 and max_F0 in Hz, sets npitch_min and npitch_max in samples
 	///
     void set_f0_range(float min_F0, float max_F0);
-
-    //void set_unvoiced_thresholds(float pot, float r1, float rmax);
   };
 }
 #endif
