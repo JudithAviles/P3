@@ -29,6 +29,19 @@ def read_wav(path):
 def read_f0(path):
     return np.loadtxt(path)
 
+def smooth_f0(f0, window=3):
+    """Apply median filter to smooth F0 contour, preserving zeros (unvoiced)."""
+    smoothed = np.copy(f0)
+    voiced = f0 > 0
+    if np.sum(voiced) < window:
+        return smoothed
+    idx = np.where(voiced)[0]
+    for i in idx:
+        left = max(0, i - window // 2)
+        right = min(len(f0), i + window // 2 + 1)
+        smoothed[i] = np.median(f0[left:right][f0[left:right] > 0]) if np.any(f0[left:right] > 0) else 0
+    return smoothed
+
 def autocorr(x):
     n = len(x)
     r = np.zeros(n)
@@ -94,7 +107,7 @@ def plot_wavesurfer_params(wav_path, f0_path=None, f0ref_path=None, output_path=
         else:
             f0ref = f0ref_data
 
-    f0 = f0_est
+    f0 = smooth_f0(f0_est)
     n_frames = len(pot)
     t = np.arange(n_frames) * frame_shift
 
@@ -217,6 +230,8 @@ def plot_comparison(wav_path, f0_path=None, f0ref_path=None, output_path=None):
             f0 = f0_data
     else:
         f0 = f0_est
+    if f0 is not None:
+        f0 = smooth_f0(f0)
 
     f0ref = None
     if f0ref_path and os.path.exists(f0ref_path):
