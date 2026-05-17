@@ -58,7 +58,7 @@ PROJECT_LOGO           =
 # entered, it will be relative to the location where doxygen was started. If
 # left blank the current directory will be used.
 
-OUTPUT_DIRECTORY       = /home/judith/PAV/html
+OUTPUT_DIRECTORY       = /home/tomas/PAV/html
 
 # If the CREATE_SUBDIRS tag is set to YES then doxygen will create 4096 sub-
 # directories (in 2 levels) under the output directory of each output format and
@@ -878,7 +878,7 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = "/home/judith/PAV/P3/README.md" "/home/judith/PAV/P3/src" "/home/judith/PAV/P3/scripts" 
+INPUT                  = "/home/tomas/PAV/P3/README.md" "/home/tomas/PAV/P3/src" "/home/tomas/PAV/P3/scripts" 
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -1287,7 +1287,7 @@ HTML_FOOTER            =
 # obsolete.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_STYLESHEET        = /home/judith/PAV/P3/src/doxyfile/style.css
+HTML_STYLESHEET        = /home/tomas/PAV/P3/src/doxyfile/style.css
 
 # The HTML_EXTRA_STYLESHEET tag can be used to specify additional user-defined
 # cascading style sheets that are included after the standard style sheets

@@ -58,31 +58,26 @@ namespace upc {
   }
 
   void PitchAnalyzer::cepstrum(const vector<float> &x, vector<float> &c) const {
-    vector<float> X;
     int N = x.size();
-    float a = 0;
-    float b = 0;
-    //const auto ci = std::complex<float>(0, 1);
-    for (size_t k = 0; k < X.size(); ++k) {
+    vector<float> X(N);
+
+    for (int k = 0; k < N; ++k) {
+      float a = 0, b = 0;
       for (int n = 0; n < N; ++n){
-        //X[k] += x[n]*exp((float)((1/N)*2*M_PI*k*n)*conj(ci));
-        a+= cos((2*M_PI*k*n)/N)*x[n];
-        b+= -sin((2*M_PI*k*n)/N)*x[n];
+        a += cos((2*M_PI*k*n)/N) * x[n];
+        b += -sin((2*M_PI*k*n)/N) * x[n];
       }
-      complex<float> dfttemp(a, b);
-      X[k] = log(fabs(dfttemp));
+      float mag = sqrt(a*a + b*b);
+      X[k] = log(mag + 1e-10f);
     }
 
-    a = 0;
-    b = 0;
-    for (int n = 0; n < N; ++n) {
-      for (size_t k = 0; k < X.size(); ++k){
-        //c[n] += X[k]*exp((float)((1/N)*2*M_PI*k*n)*ci);
-        a+= cos((2*M_PI*k*n)/N)*X[k];
-        b+= -sin((2*M_PI*k*n)/N)*X[k];
+    for (int n = 0; n < (int)c.size(); ++n) {
+      float a = 0, b = 0;
+      for (int k = 0; k < N; ++k){
+        a += cos((2*M_PI*k*n)/N) * X[k];
+        b += -sin((2*M_PI*k*n)/N) * X[k];
       }
-      complex<float> idfttemp(a, b);
-      c[n] = fabs(idfttemp)/N;
+      c[n] = sqrt(a*a + b*b) / N;
     }
   }
 

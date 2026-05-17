@@ -43,6 +43,7 @@ Options:
     --alpha0=<dB>              Power threshold for unvoiced decision [default: -42]
     --alpha1=<f>               r1/r0 threshold for unvoiced decision [default: 0.47]
     --alpha2=<f>               rmax/r0 threshold for unvoiced decision [default: 0.33]
+    --method=<name>            Method: autocorr, amdf, cepstrum [default: autocorr]
 
 Arguments:
     input-wav   Wave file with the audio signal
@@ -82,6 +83,15 @@ int main(int argc, const char *argv[]) {
     float alpha1 = stof(args["--alpha1"].asString());
     float alpha2 = stof(args["--alpha2"].asString());
 
+    string method_str = args["--method"].asString();
+    PitchAnalyzer::Params method;
+    if (method_str == "amdf")
+      method = PitchAnalyzer::AMDF;
+    else if (method_str == "cepstrum")
+      method = PitchAnalyzer::CEPSTRUM;
+    else
+      method = PitchAnalyzer::CORRELACIO;
+
     //frame_len = 0.030;
     //frame_shift = 0.015;
 
@@ -97,7 +107,7 @@ int main(int argc, const char *argv[]) {
     int n_shift = (int)(rate * frame_shift);
 
     // Define analyzer
-    PitchAnalyzer analyzer(n_len, rate, PitchAnalyzer::HAMMING, PitchAnalyzer::CORRELACIO, min_f0, max_f0, alpha0, alpha1, alpha2);
+    PitchAnalyzer analyzer(n_len, rate, PitchAnalyzer::HAMMING, method, min_f0, max_f0, alpha0, alpha1, alpha2);
 
     /// \TODO
     /// Preprocess the input signal in order to ease pitch estimation. For instance,

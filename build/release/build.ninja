@@ -32,7 +32,7 @@ rule CUSTOM_COMMAND
  restat = 1
 
 rule REGENERATE_BUILD
- command = /usr/bin/meson --internal regenerate /home/judith/PAV/P3 .
+ command = /usr/bin/meson --internal regenerate /home/tomas/PAV/P3 .
  description = Regenerating build files.
  generator = 1
 
@@ -91,22 +91,22 @@ build src/get_pitch/pitch_evaluate.p/pitch_evaluate.cpp.o: cpp_COMPILER ../../sr
 build src/get_pitch/pitch_evaluate: cpp_LINKER src/get_pitch/pitch_evaluate.p/pitch_evaluate.cpp.o | src/pav/libpav.a
  LINK_ARGS = -Wl,--as-needed -Wl,--no-undefined -Wl,-O1 -Wl,--start-group src/pav/libpav.a -Wl,--end-group
 
-build scripts/run_get_pitch: CUSTOM_COMMAND /home/judith/PAV/P3/scripts/run_get_pitch.sh | /usr/bin/ln
- COMMAND = /usr/bin/ln -sf /home/judith/PAV/P3/scripts/run_get_pitch.sh /home/judith/PAV/bin/run_get_pitch
+build scripts/run_get_pitch: CUSTOM_COMMAND /home/tomas/PAV/P3/scripts/run_get_pitch.sh | /usr/bin/ln
+ COMMAND = /usr/bin/ln -sf /home/tomas/PAV/P3/scripts/run_get_pitch.sh /home/tomas/PAV/bin/run_get_pitch
  description = Generating$ scripts/run_get_pitch.sh$ with$ a$ custom$ command
 
-build scripts/grid_search: CUSTOM_COMMAND /home/judith/PAV/P3/scripts/grid_search.sh | /usr/bin/ln
- COMMAND = /usr/bin/ln -sf /home/judith/PAV/P3/scripts/grid_search.sh /home/judith/PAV/bin/grid_search
+build scripts/grid_search: CUSTOM_COMMAND /home/tomas/PAV/P3/scripts/grid_search.sh | /usr/bin/ln
+ COMMAND = /usr/bin/ln -sf /home/tomas/PAV/P3/scripts/grid_search.sh /home/tomas/PAV/bin/grid_search
  description = Generating$ scripts/grid_search.sh$ with$ a$ custom$ command
 
-build scripts/plot_analysis: CUSTOM_COMMAND /home/judith/PAV/P3/scripts/plot_analysis.py | /usr/bin/ln
- COMMAND = /usr/bin/ln -sf /home/judith/PAV/P3/scripts/plot_analysis.py /home/judith/PAV/bin/plot_analysis
+build scripts/plot_analysis: CUSTOM_COMMAND /home/tomas/PAV/P3/scripts/plot_analysis.py | /usr/bin/ln
+ COMMAND = /usr/bin/ln -sf /home/tomas/PAV/P3/scripts/plot_analysis.py /home/tomas/PAV/bin/plot_analysis
  description = Generating$ scripts/plot_analysis.py$ with$ a$ custom$ command
 
 build doc: phony meson-internal__doc
 
 build meson-internal__doc: CUSTOM_COMMAND  | /usr/bin/doxygen src/doxyfile/Doxyfile
- COMMAND = env MESON_SOURCE_ROOT=/home/judith/PAV/P3 MESON_BUILD_ROOT=/home/judith/PAV/P3/build/release MESON_SUBDIR=src/doxyfile 'MESONINTROSPECT=/usr/bin/meson$ introspect' /usr/bin/doxygen src/doxyfile/Doxyfile
+ COMMAND = env MESON_SOURCE_ROOT=/home/tomas/PAV/P3 MESON_BUILD_ROOT=/home/tomas/PAV/P3/build/release MESON_SUBDIR=src/doxyfile 'MESONINTROSPECT=/usr/bin/meson$ introspect' /usr/bin/doxygen src/doxyfile/Doxyfile
  description = Running$ external$ command$ doc$ (wrapped$ by$ meson$ to$ set$ env)
  pool = console
 
@@ -161,7 +161,7 @@ build clean: phony meson-internal__clean
 build clean-ctlist: phony meson-internal__clean-ctlist
 
 build meson-internal__clean-ctlist: CUSTOM_COMMAND PHONY
- COMMAND = /usr/bin/meson --internal cleantrees /home/judith/PAV/P3/build/release/meson-private/cleantrees.dat
+ COMMAND = /usr/bin/meson --internal cleantrees /home/tomas/PAV/P3/build/release/meson-private/cleantrees.dat
  description = Cleaning$ custom$ target$ directories
 
 build meson-internal__clean: CUSTOM_COMMAND PHONY | clean-ctlist
