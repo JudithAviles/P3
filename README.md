@@ -94,8 +94,8 @@ hacerlo. Se valorará la utilización de la biblioteca matplotlib de Python.
 
       ![Wavesurfer parameters](prueba_wavesurfer.png)
 
-      Parámetros: pot (umbral -42 dB), r1norm (umbral 0.48), rmaxnorm (umbral 0.34). Nosotros también hemos considerado
-      utilizar la tasa de cruces por cero zcr (umbral 0.012).
+      *Parámetros: pot (umbral -42 dB), r1norm (umbral 0.48), rmaxnorm (umbral 0.34). Nosotros también hemos considerado*
+      *utilizar la tasa de cruces por cero zcr (umbral 0.012).*
 
 	    Puede considerar, también, la conveniencia de usar la tasa de cruces por cero.
 
@@ -126,7 +126,7 @@ hacerlo. Se valorará la utilización de la biblioteca matplotlib de Python.
     | -41         | 0.46           | 0.32            |0.009            | 91.19%      |
 
     *Parámetros optimizados: alpha0=-42, alpha1=0.48, alpha2=0.34, alpha3=0.012.*
-    *Hemos optimizado los parámetros a través del script `grid_search.sh`, el cual nos ha permitido comprobar múltiples combinaciones de diferentes valores para cada parámetro para encontrar la que nos daría el score máximo. Antes de utilizar `grid_search`se ha hecho una búsqueda inicial de valores apropiados manual para reducir la cantidad de valores a buscar en `grid_search` y reducir su tiempo de computación.*
+    *Hemos optimizado los parámetros a través del script* `grid_search.sh`*, el cual nos ha permitido comprobar múltiples combinaciones de diferentes valores para cada parámetro para encontrar la que nos daría el score máximo. Antes de utilizar* `grid_search` *se ha hecho una búsqueda inicial de valores apropiados manual para reducir la cantidad de valores a buscar en* `grid_search` *y reducir su tiempo de computación.*
 
 Ejercicios de ampliación
 ------------------------
