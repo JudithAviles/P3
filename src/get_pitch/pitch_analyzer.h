@@ -38,6 +38,7 @@ namespace upc {
     float pot_threshold;
     float r1norm_threshold;
     float rmaxnorm_threshold;
+    float zcr_threshold;
  
 	///
 	/// Computes correlation from lag=0 to r.size()
